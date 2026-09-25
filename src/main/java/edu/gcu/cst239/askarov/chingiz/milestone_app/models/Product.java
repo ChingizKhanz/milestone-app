@@ -1,4 +1,4 @@
-package edu.gcu.cst239.askarov.chingiz.milestone_app.models; // Replace sparks.james with lastname.firstname
+package edu.gcu.cst239.askarov.chingiz.milestone_app.models;
 
 import java.time.LocalDate;
 import java.util.Objects;
