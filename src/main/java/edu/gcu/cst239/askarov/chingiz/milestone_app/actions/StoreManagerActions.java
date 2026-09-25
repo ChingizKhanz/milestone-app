@@ -2,6 +2,8 @@ package edu.gcu.cst239.askarov.chingiz.milestone_app.actions;
 
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.StoreFront;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.util.InputUtilities;
+import edu.gcu.cst239.askarov.chingiz.milestone_app.services.InventoryService;
+import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
 
 /**
  * Provides the user with the Store Manager menu and asks which option they would like to proceed with.
@@ -24,6 +26,7 @@ public class StoreManagerActions {
      */
     public void handleManagerActions() {
         InputUtilities input = new InputUtilities();
+        InventoryService inventoryService = store.getInventoryManager();
         boolean exitRequested = false;
         while (!exitRequested) {
             System.out.println();
@@ -40,7 +43,9 @@ public class StoreManagerActions {
             switch (choice) {
                 case 1:
                     System.out.println("You chose to view products.");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    for (InventoryItem item : inventoryService.getAllInventoryItems()) {
+                        System.out.println(item);
+                    }
                     break;
                 case 2:
                     System.out.println("You chose to search for product by name or description.");
