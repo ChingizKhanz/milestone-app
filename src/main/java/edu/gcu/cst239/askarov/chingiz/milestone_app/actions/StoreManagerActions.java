@@ -10,7 +10,8 @@ import edu.gcu.cst239.askarov.chingiz.milestone_app.services.StoreFront;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.util.InputUtilities;
 
 /**
- * Provides the user with the Store Manager menu and asks which option they would like to proceed with.
+ * Provides the user with the Store Manager menu and asks which option they
+ * would like to proceed with.
  */
 public class StoreManagerActions {
 
@@ -18,6 +19,7 @@ public class StoreManagerActions {
 
     /**
      * Creates the store manager menu for a storefront.
+     * 
      * @param store the storefront where the invenotry this menu is managing.
      */
     public StoreManagerActions(StoreFront store) {
@@ -53,7 +55,7 @@ public class StoreManagerActions {
                     System.out.println("You chose to search for product by name or description.");
                     int searchBy = input.readInt("Search by 1. Name or 2. Description", 1, 2);
                     String term = input.readString("Enter search term: ");
-                    if(searchBy == 1) {
+                    if (searchBy == 1) {
                         printAllItems(inventoryService.searchProductsByName(term), "Nothing was found.");
                     } else {
                         printAllItems(inventoryService.searchProductsByDescription(term), "Nothing was found.");
@@ -91,7 +93,7 @@ public class StoreManagerActions {
                 case 4:
                     System.out.println("You chose to remove a product in inventory.");
                     int removeId = input.readInt("Enter the ID to remove: ");
-                    if (inventoryService.removeProductById(removeId)){
+                    if (inventoryService.removeProductById(removeId)) {
                         System.out.println("Product removed.");
                     } else {
                         System.out.println("No product with that ID was found.");
@@ -99,7 +101,40 @@ public class StoreManagerActions {
                     break;
                 case 5:
                     System.out.println("You chose to update a product in inventory.");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    int updateId = input.readInt("Product ID to update: ");
+                    if (inventoryService.getInventoryItemByProductId(updateId) == null) {
+                        System.out.println("No product with that ID was found.");
+                        break;
+                    }
+                    int updateChoice = input.readInt("Update 1. Product data or 2. Quantity", 1, 2);
+                    if (updateChoice == 1) {
+                        String updName = input.readString("New name: ");
+                        if (updName.isBlank()) {
+                            System.out.println("Name is required. Nothing was changed.");
+                            break;
+                        }
+                        String updDescription = input.readString("New description: ");
+                        LocalDate updDate = input.readLocalDate("New date of manufacture", "yyyy-MM-dd");
+                        double updPrice = input.readDouble("New price: ", 0, 100000);
+                        String updCategory = input.readString("New category: ");
+                        Product updated = Product.builder()
+                                .id(updateId)
+                                .name(updName)
+                                .description(updDescription)
+                                .dateOfManufacture(updDate)
+                                .price(updPrice)
+                                .category(updCategory)
+                                .build();
+                        inventoryService.updateProduct(updated);
+                        System.out.println("Product updated.");
+                    } else {
+                        int updQuantity = input.readInt("New quantity: ");
+                        if (inventoryService.updateQuantity(updateId, updQuantity)) {
+                            System.out.println("Quantity updated.");
+                        } else {
+                            System.out.println("Quantity cannot be negative. Nothing was changed.");
+                        }
+                    }
                     break;
                 case 6:
                     System.out.println("You chose to save inventory to a file");
@@ -119,9 +154,12 @@ public class StoreManagerActions {
             }
         }
     }
+
     /**
-     * Each item in list is printed, unless the list is empty then a message is printed.
-     * @param items all the items to be printed
+     * Each item in list is printed, unless the list is empty then a message is
+     * printed.
+     * 
+     * @param items        all the items to be printed
      * @param emptymessage message when list is empty
      */
     private void printAllItems(List<InventoryItem> items, String emptymessage) {
@@ -133,6 +171,5 @@ public class StoreManagerActions {
             System.out.println(item);
         }
     }
-
 
 }
