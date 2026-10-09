@@ -3,6 +3,9 @@ package edu.gcu.cst239.askarov.chingiz.milestone_app.actions;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.StoreFront;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.util.InputUtilities;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.InventoryService;
+
+import java.util.List;
+
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
 
 /**
@@ -43,9 +46,7 @@ public class StoreManagerActions {
             switch (choice) {
                 case 1:
                     System.out.println("You chose to view products.");
-                    for (InventoryItem item : inventoryService.getAllInventoryItems()) {
-                        System.out.println(item);
-                    }
+                    printAllItems(inventoryService.getAllInventoryItems(), "No products in the inventory.");
                     break;
                 case 2:
                     System.out.println("You chose to search for product by name or description.");
@@ -81,4 +82,20 @@ public class StoreManagerActions {
             }
         }
     }
+    /**
+     * Each item in list is printed, unless the list is empty then a message is printed.
+     * @param items all the items to be printed
+     * @param emptymessage message when list is empty
+     */
+    private void printAllItems(List<InventoryItem> items, String emptymessage) {
+        if (items.isEmpty()) {
+            System.out.println(emptymessage);
+            return;
+        }
+        for (InventoryItem item : items) {
+            System.out.println(item);
+        }
+    }
+
+
 }
