@@ -10,12 +10,14 @@ package edu.gcu.cst239.askarov.chingiz.milestone_app.services;
 public class StoreFront {
 
     private final InventoryService inventoryManager;
+    private final CartService cartService;
 
     /**
      * Creates the storefront and its required services.
      */
     public StoreFront() {
         inventoryManager = new InventoryManager();
+        cartService = new ShoppingCart(inventoryManager);
     }
 
     /**
@@ -25,5 +27,13 @@ public class StoreFront {
      */
     public InventoryService getInventoryManager() {
         return inventoryManager;
+    }
+
+    /**
+     * Returns the shared shopping cart.
+     * @return the cart service
+     */
+    public CartService getCartService(){
+        return cartService;
     }
 }

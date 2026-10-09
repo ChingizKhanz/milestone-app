@@ -3,6 +3,7 @@ package edu.gcu.cst239.askarov.chingiz.milestone_app.actions;
 import java.util.List;
 
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
+import edu.gcu.cst239.askarov.chingiz.milestone_app.services.CartService;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.InventoryService;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.StoreFront;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.util.InputUtilities;
@@ -31,6 +32,7 @@ public class CustomerActions {
     public void handleCustomerActions() {
         InputUtilities input = new InputUtilities();
         InventoryService inventoryService = store.getInventoryManager();
+        CartService cartService = store.getCartService();
         boolean exitRequested = false;
         while (!exitRequested) {
             System.out.println();
@@ -76,7 +78,20 @@ public class CustomerActions {
                     break;
                 case 3:
                     System.out.println("You chose to add products to your cart");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    printAvailableItems(inventoryService.getAllInventoryItems(),
+                            "No products are available right now.");
+                    int cartId = input.readInt("Product ID to add: ");
+                    InventoryItem wanted = inventoryService.getInventoryItemByProductId(cartId);
+                    if (wanted == null) {
+                        System.out.println("No product with that ID was found.");
+                        break;
+                    }
+                    int cartQuantity = input.readInt("Quantity: ");
+                    if (cartService.addProduct(wanted.getProduct(), cartQuantity)) {
+                        System.out.println("Added to cart.");
+                    } else {
+                        System.out.println("Quantity must be 1 or more and not above stock. Nothing was added.");
+                    }
                     break;
                 case 4:
                     System.out.println("You chose to remove products from your cart");
