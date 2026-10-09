@@ -50,7 +50,13 @@ public class StoreManagerActions {
                     break;
                 case 2:
                     System.out.println("You chose to search for product by name or description.");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    int searchBy = input.readInt("Search by 1. Name or 2. Description", 1, 2);
+                    String term = input.readString("Enter search term: ");
+                    if(searchBy == 1) {
+                        printAllItems(inventoryService.searchProductsByName(term), "Nothing was found.");
+                    } else {
+                        printAllItems(inventoryService.searchProductsByDescription(term), "Nothing was found.");
+                    }
                     break;
                 case 3:
                     System.out.println("You chose to add a product to inventory.");
