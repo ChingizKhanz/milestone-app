@@ -106,7 +106,21 @@ public class CustomerActions {
                     break;
                 case 5:
                     System.out.println("You chose to view your cart");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    printCart(cartService);
+                    if (cartService.getAllCartItems().isEmpty()) {
+                        break;
+                    }
+                    int editId = input.readInt("Product ID to change, or 0 to keep the cart: ");
+                    if (editId == 0) {
+                        break;
+                    }
+                    int editQuantity = input.readInt("New quantity (0 removes the item): ");
+                    if (cartService.updateQuantity(editId, editQuantity)) {
+                        System.out.println("Cart updated.");
+                        printCart(cartService);
+                    } else {
+                        System.out.println("That change is not possible. Nothing was changed.");
+                    }
                     break;
                 case 6:
                     System.out.println("You chose to checkout.");
