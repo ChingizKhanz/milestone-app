@@ -142,8 +142,12 @@ public class InventoryManager implements InventoryService {
 
     @Override
     public boolean removeProductById(int productId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeProductById'");
+        InventoryItem item = getInventoryItemByProductId(productId);
+        if (item == null) {
+            return false;
+        }
+        inventory.remove(item);
+        return true;
     }
 
     @Override
