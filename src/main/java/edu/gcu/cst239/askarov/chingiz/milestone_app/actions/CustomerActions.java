@@ -2,6 +2,7 @@ package edu.gcu.cst239.askarov.chingiz.milestone_app.actions;
 
 import java.util.List;
 
+import edu.gcu.cst239.askarov.chingiz.milestone_app.models.CartItem;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.CartService;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.InventoryService;
@@ -95,7 +96,13 @@ public class CustomerActions {
                     break;
                 case 4:
                     System.out.println("You chose to remove products from your cart");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    printCart(cartService);
+                    int dropId = input.readInt("Product ID to remove from cart: ");
+                    if (cartService.removeProductFromCart(dropId)) {
+                        System.out.println("Removed from cart.");
+                    } else {
+                        System.out.println("That product is not in your cart.");
+                    }
                     break;
                 case 5:
                     System.out.println("You chose to view your cart");
@@ -133,5 +140,17 @@ public class CustomerActions {
         if (!printedAny) {
             System.out.println(emptyMessage);
         }
+    }
+
+    private void printCart(CartService cartService) {
+        List<CartItem> items = cartService.getAllCartItems();
+        if (items.isEmpty()) {
+            System.out.println("Your cart is empty.");
+            return;
+        }
+        for (CartItem item : items) {
+            System.out.println(item);
+        }
+        System.out.println("Total: $" + String.format("%.2f", cartService.getCartTotal()));
     }
 }
