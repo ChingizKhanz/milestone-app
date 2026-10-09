@@ -117,8 +117,15 @@ public class InventoryManager implements InventoryService {
 
     @Override
     public boolean addInventoryItem(InventoryItem item) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addInventoryItem'");
+        if (item == null) {
+            return false;
+        }
+        int id = item.getProduct().getId();
+        if(getInventoryItemByProductId(id) != null) {
+            return false;
+        }
+        inventory.add(item);
+        return true;
     }
 
     @Override
