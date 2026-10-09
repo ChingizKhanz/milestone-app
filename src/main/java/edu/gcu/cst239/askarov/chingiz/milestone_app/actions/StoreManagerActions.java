@@ -1,12 +1,13 @@
 package edu.gcu.cst239.askarov.chingiz.milestone_app.actions;
 
-import edu.gcu.cst239.askarov.chingiz.milestone_app.services.StoreFront;
-import edu.gcu.cst239.askarov.chingiz.milestone_app.util.InputUtilities;
-import edu.gcu.cst239.askarov.chingiz.milestone_app.services.InventoryService;
-
+import java.time.LocalDate;
 import java.util.List;
 
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
+import edu.gcu.cst239.askarov.chingiz.milestone_app.models.Product;
+import edu.gcu.cst239.askarov.chingiz.milestone_app.services.InventoryService;
+import edu.gcu.cst239.askarov.chingiz.milestone_app.services.StoreFront;
+import edu.gcu.cst239.askarov.chingiz.milestone_app.util.InputUtilities;
 
 /**
  * Provides the user with the Store Manager menu and asks which option they would like to proceed with.
@@ -60,7 +61,32 @@ public class StoreManagerActions {
                     break;
                 case 3:
                     System.out.println("You chose to add a product to inventory.");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    int newId = input.readInt("Product ID: ", 1, 999999);
+                    String newName = input.readString("Name: ");
+                    if (newName.isBlank()) {
+                        System.out.println("Name is required. Nothing was added.");
+                        break;
+                    }
+                    String newDescription = input.readString("Description: ");
+                    LocalDate newDate = input.readLocalDate("Date of manufacture", "yyyy-MM-dd");
+                    double newPrice = input.readDouble("Price: ", 0, 100000);
+                    String newCategory = input.readString("Category: ");
+                    int newQuantity = input.readInt("Starting quantity: ", 0, 100000);
+
+                    Product newProduct = Product.builder()
+                            .id(newId)
+                            .name(newName)
+                            .description(newDescription)
+                            .dateOfManufacture(newDate)
+                            .price(newPrice)
+                            .category(newCategory)
+                            .build();
+                    InventoryItem newItem = new InventoryItem(newProduct, newQuantity);
+                    if (inventoryService.addInventoryItem(newItem)) {
+                        System.out.println("Product added.");
+                    } else {
+                        System.out.println("That product ID already exists. Nothing was added.");
+                    }
                     break;
                 case 4:
                     System.out.println("You chose to remove a product in inventory.");
