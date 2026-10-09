@@ -2,6 +2,7 @@ package edu.gcu.cst239.askarov.chingiz.milestone_app.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
@@ -172,4 +173,36 @@ public class InventoryManager implements InventoryService {
         throw new UnsupportedOperationException("Unimplemented method 'clearInventory'");
     }
 
+    /**
+     * Returns a sorted copy by product name. The stored list is not reordered.
+     * @return the inventory items in name order
+     */
+    @Override
+    public List<InventoryItem> getInventoryItemsSortedByName() {
+        List<InventoryItem> sorted = new ArrayList<>(inventory);
+        sorted.sort(Comparator.comparing(item -> item.getProduct().getName()));
+        return sorted;
+    }
+
+    /**
+     * Returns a sorted copy by date of manufacture. The stored list is not reordered.
+     * @return the inventory items from oldest to newest
+     */
+    @Override
+    public List<InventoryItem> getInventoryItemsSortedByDate() {
+        List<InventoryItem> sorted = new ArrayList<>(inventory);
+        sorted.sort(Comparator.comparing(item -> item.getProduct().getDateOfManufacture()));
+        return sorted;
+    }
+
+    /**
+     * Returns a sorted copy by price. The stored list is not reordered.
+     * @return the inventory items from cheapest to most expensive
+     */
+    @Override
+    public List<InventoryItem> getInventoryItemsSortedByPrice() {
+        List<InventoryItem> sorted = new ArrayList<>(inventory);
+        sorted.sort(Comparator.comparingDouble(item -> item.getProduct().getPrice()));
+        return sorted;
+    }
 }
