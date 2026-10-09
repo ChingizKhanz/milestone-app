@@ -124,7 +124,19 @@ public class CustomerActions {
                     break;
                 case 6:
                     System.out.println("You chose to checkout.");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    printCart(cartService);
+                    if (cartService.getAllCartItems().isEmpty()) {
+                        break;
+                    }
+                    if (!input.readBoolean("Confirm purchase?")) {
+                        System.out.println("Checkout cancelled. Nothing was changed.");
+                        break;
+                    }
+                    if (cartService.checkout()) {
+                        System.out.println("Purchase complete. Thank you.");
+                    } else {
+                        System.out.println("Not enough stock for an item. Nothing was changed.");
+                    }
                     break;
                 case 0:
                     System.out.println("You chose to exit.");
