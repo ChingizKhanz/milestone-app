@@ -93,14 +93,26 @@ public class InventoryManager implements InventoryService {
 
     @Override
     public List<InventoryItem> searchProductsByName(String searchTerm) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'searchProductsByName'");
+        List<InventoryItem> results = new ArrayList<>();
+        String term = searchTerm.toLowerCase();
+        for(InventoryItem item : inventory) {
+            if (item.getProduct().getName().toLowerCase().contains(term)){
+                results.add(item);
+            }
+        }
+        return results;
     }
 
     @Override
     public List<InventoryItem> searchProductsByDescription(String searchTerm) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'searchProductsByDescription'");
+        List<InventoryItem> results = new ArrayList<>();
+        String term = searchTerm.toLowerCase();
+        for(InventoryItem item : inventory) {
+            if (item.getProduct().getDescription().toLowerCase().contains(term)){
+                results.add(item);
+            }
+        }
+        return results;
     }
 
     @Override
