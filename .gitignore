@@ -33,3 +33,4 @@ build/
 .vscode/
 *:Zone.Identifier
 target/
+docs/
