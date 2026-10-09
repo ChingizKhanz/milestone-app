@@ -88,4 +88,22 @@ public interface InventoryService {
      * Removes every item from the inventory.
      */
     void clearInventory();
+
+    /**
+     * Copy of the inventory sorted by product name is returned.
+     * @return the inventory items in name order
+     */
+    List<InventoryItem> getInventoryItemsSortedByName();
+
+    /**
+     * Copy of the inventory sorted by date of manufacture is returned.
+     * @return the inventory items from oldest to newest
+     */
+    List<InventoryItem> getInventoryItemsSortedByDate();
+
+    /**
+     * Copy of the inventory sorted by price is returned.
+     * @return the inventory items from cheapest to most expensive.
+     */
+    List<InventoryItem> getInventoryItemsSortedByPrice();
 }

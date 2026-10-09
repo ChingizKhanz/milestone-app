@@ -1,10 +1,15 @@
 package edu.gcu.cst239.askarov.chingiz.milestone_app.actions;
 
+import java.util.List;
+
+import edu.gcu.cst239.askarov.chingiz.milestone_app.services.InventoryService;
+import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.StoreFront;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.util.InputUtilities;
 
 /**
- * Provides the user with the Customer menu and asks which option they would like to proceed with.
+ * Provides the user with the Customer menu and asks which option they would
+ * like to proceed with.
  */
 public class CustomerActions {
 
@@ -25,6 +30,7 @@ public class CustomerActions {
      */
     public void handleCustomerActions() {
         InputUtilities input = new InputUtilities();
+        InventoryService inventoryService = store.getInventoryManager();
         boolean exitRequested = false;
         while (!exitRequested) {
             System.out.println();
@@ -40,7 +46,16 @@ public class CustomerActions {
             switch (choice) {
                 case 1:
                     System.out.println("You chose to view products.");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    int sortBy = input.readInt("Sort by 1. Name, 2. Manufacture date or 3. Price", 1, 3);
+                    List<InventoryItem> sorted;
+                    if (sortBy == 1) {
+                        sorted = inventoryService.getInventoryItemsSortedByName();
+                    } else if (sortBy == 2) {
+                        sorted = inventoryService.getInventoryItemsSortedByDate();
+                    } else {
+                        sorted = inventoryService.getInventoryItemsSortedByPrice();
+                    }
+                    printAvailableItems(sorted, "No products are available right now.");
                     break;
                 case 2:
                     System.out.println("You chose to search for product by name or description.");
@@ -70,6 +85,24 @@ public class CustomerActions {
                     // This case should never occur because readInt enforces range
                     System.out.println("Invalid selection. Please try again.");
             }
+        }
+    }
+
+    /**
+    * Prints the items that are in stock, or a message when there are none.
+    * @param items the inventory items to check
+    * @param emptyMessage the text to print when nothing is in stock
+    */
+    private void printAvailableItems(List<InventoryItem> items, String emptyMessage) {
+        boolean printedAny = false;
+        for (InventoryItem item : items) {
+            if (item.getQuantityInStock() > 0) {
+            System.out.println(item);
+            printedAny = true;
+            }
+        }
+        if (!printedAny) {
+            System.out.println(emptyMessage);
         }
     }
 }
