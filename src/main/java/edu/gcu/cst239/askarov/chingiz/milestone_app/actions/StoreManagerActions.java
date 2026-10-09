@@ -90,7 +90,12 @@ public class StoreManagerActions {
                     break;
                 case 4:
                     System.out.println("You chose to remove a product in inventory.");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    int removeId = input.readInt("Enter the ID to remove: ");
+                    if (inventoryService.removeProductById(removeId)){
+                        System.out.println("Product removed.");
+                    } else {
+                        System.out.println("No product with that ID was found.");
+                    }
                     break;
                 case 5:
                     System.out.println("You chose to update a product in inventory.");
