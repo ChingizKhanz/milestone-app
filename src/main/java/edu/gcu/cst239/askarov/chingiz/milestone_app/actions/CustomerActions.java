@@ -2,8 +2,8 @@ package edu.gcu.cst239.askarov.chingiz.milestone_app.actions;
 
 import java.util.List;
 
-import edu.gcu.cst239.askarov.chingiz.milestone_app.services.InventoryService;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
+import edu.gcu.cst239.askarov.chingiz.milestone_app.services.InventoryService;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.StoreFront;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.util.InputUtilities;
 
@@ -59,7 +59,20 @@ public class CustomerActions {
                     break;
                 case 2:
                     System.out.println("You chose to search for product by name or description.");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    int searchBy = input.readInt("Search by 1. Name or 2. Description", 1, 2);
+                    String term = input.readString("Enter search term: ");
+                    List<InventoryItem> matches;
+                    if (searchBy == 1) {
+                        matches = inventoryService.searchProductsByName(term);
+                    } else {
+                        matches = inventoryService.searchProductsByDescription(term);
+                    }
+                    if (matches.isEmpty()) {
+                        System.out.println("Nothing was found.");
+                    }
+                    for (InventoryItem match : matches) {
+                        System.out.println(match);
+                    }
                     break;
                 case 3:
                     System.out.println("You chose to add products to your cart");
@@ -89,16 +102,17 @@ public class CustomerActions {
     }
 
     /**
-    * Prints the items that are in stock, or a message when there are none.
-    * @param items the inventory items to check
-    * @param emptyMessage the text to print when nothing is in stock
-    */
+     * Prints the items that are in stock, or a message when there are none.
+     * 
+     * @param items        the inventory items to check
+     * @param emptyMessage the text to print when nothing is in stock
+     */
     private void printAvailableItems(List<InventoryItem> items, String emptyMessage) {
         boolean printedAny = false;
         for (InventoryItem item : items) {
             if (item.getQuantityInStock() > 0) {
-            System.out.println(item);
-            printedAny = true;
+                System.out.println(item);
+                printedAny = true;
             }
         }
         if (!printedAny) {
