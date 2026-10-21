@@ -23,6 +23,17 @@ public class InventoryManager implements InventoryService {
         initializeInventory();
     }
 
+    /**
+     * Creates an inventory manager that starts with a copy of the given items.
+     * Tests use this so they know exactly what is in the inventory.
+     * 
+     * @param items the starting inventory items
+     */
+
+    public InventoryManager(List<InventoryItem> items) {
+        inventory = new ArrayList<>(items);
+    }
+
     private void initializeInventory() {
         Product gpu = Product.builder()
                 .id(1)
