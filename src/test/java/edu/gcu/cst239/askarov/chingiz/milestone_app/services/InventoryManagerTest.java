@@ -6,6 +6,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.Product;
@@ -28,6 +30,12 @@ class InventoryManagerTest {
         Product product = Product.builder().id(3).name("Samsung 990 Pro").description("2TB solid state drive")
                 .dateOfManufacture(LocalDate.of(2022, 11, 22)).price(170).build();
         return new InventoryItem(product, 10);
+    }
+
+    private InventoryItem ramItem() {
+        Product product = Product.builder().id(4).name("Corsair Vengeance 32GB DDR5").description("DDR5 desktop memory")
+                .dateOfManufacture(LocalDate.of(2022, 11, 15)).price(105).build();
+        return new InventoryItem(product, 15);  
     }
 
     @Test
@@ -117,4 +125,90 @@ class InventoryManagerTest {
         //Assert
         assertEquals(1, results.size());
     }
+
+    @Test
+    void addNewItemIncreasesSize() {
+        //Arrange
+        InventoryManager manager = new InventoryManager(List.of(gpuItem(), cpuItem(), ssdItem()));
+
+        //Act
+        boolean added = manager.addInventoryItem(ramItem());
+
+        //Assert
+        assertTrue(added);
+        assertEquals(4, manager.getAllInventoryItems().size());
+    }
+
+    @Test
+    void addDuplicateIdIsRejected() {
+        //Arrange
+        InventoryManager manager = new InventoryManager(List.of(gpuItem(), cpuItem(), ssdItem()));
+
+        //Act
+        boolean added = manager.addInventoryItem(cpuItem());
+
+        //Assert
+        assertFalse(added);
+        assertEquals(3, manager.getAllInventoryItems().size());
+    }
+
+    @Test
+    void updateKeepsQuantity() {
+        //Arrange
+        InventoryManager manager = new InventoryManager(List.of(gpuItem(), cpuItem(), ssdItem()));
+        Product cheaperCpu = Product.builder().id(2).name("Ryzen 9 7900X").description("12-core desktop processor")
+                .dateOfManufacture(LocalDate.of(2022, 9, 27)).price(300).build();
+        //Act
+        boolean updated = manager.updateProduct(cheaperCpu);
+
+        //Assert
+        assertTrue(updated);
+        InventoryItem item = manager.getInventoryItemByProductId(2);
+        assertEquals(300, item.getProduct().getPrice(),0.001);
+        assertEquals(3, item.getQuantityInStock());
+    }
+
+    @Test
+    void removeExistingItem() {
+        //Arrange
+        InventoryManager manager = new InventoryManager(List.of(gpuItem(), cpuItem(), ssdItem()));
+
+        //Act
+        boolean removed = manager.removeProductById(3);
+
+        //Assert
+        assertTrue(removed);
+        assertEquals(2, manager.getAllInventoryItems().size());
+        assertNull(manager.getInventoryItemByProductId(3));
+    }
+
+    @Test
+    void updateUnknownIdReturnsFalse() {
+        //Arrange
+        InventoryManager manager = new InventoryManager(List.of(gpuItem(), cpuItem(), ssdItem()));
+
+        Product cheaperCpu = Product.builder().id(99).name("Ryzen 9 7900X").description("12-core desktop processor")
+                .dateOfManufacture(LocalDate.of(2022, 9, 27)).price(300).build();
+
+        //Act
+        boolean updated = manager.updateProduct(cheaperCpu);
+
+        //Assert
+        assertFalse(updated);
+    }
+
+    @Test
+    void removeUnknownIdLeavesInventoryAlone() {
+        //Arrange
+        InventoryManager manager = new InventoryManager(List.of(gpuItem(), cpuItem(), ssdItem()));
+
+        //Act
+        boolean removed = manager.removeProductById(99);
+
+        //Assert
+        assertFalse(removed);
+        assertEquals(3, manager.getAllInventoryItems().size());
+    }
+
+
 }
