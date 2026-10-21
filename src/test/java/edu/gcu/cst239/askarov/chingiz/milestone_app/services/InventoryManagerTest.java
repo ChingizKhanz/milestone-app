@@ -210,5 +210,61 @@ class InventoryManagerTest {
         assertEquals(3, manager.getAllInventoryItems().size());
     }
 
+    @Test
+    void sortByNameIsAlphabetical() {
+        //Arrange
+        InventoryManager manager = new InventoryManager(List.of(ssdItem(), cpuItem(), gpuItem()));
+
+        //Act
+        List<InventoryItem> sorted = manager.getInventoryItemsSortedByName();
+
+        //Assert
+        assertEquals(1, sorted.get(0).getProduct().getId());
+        assertEquals(2, sorted.get(1).getProduct().getId());
+        assertEquals(3, sorted.get(2).getProduct().getId());
+    }
+
+    @Test
+    void sortByPriceIsCheapestFirst() {
+        //Arrange
+        InventoryManager manager = new InventoryManager(List.of(gpuItem(), cpuItem(), ssdItem()));
+
+        //Act
+        List<InventoryItem> sorted = manager.getInventoryItemsSortedByPrice();
+
+        //Assert
+        assertEquals(3, sorted.get(0).getProduct().getId());
+        assertEquals(2, sorted.get(1).getProduct().getId());
+        assertEquals(1, sorted.get(2).getProduct().getId());
+    }
+
+    @Test
+    void sortByDateIsOldestFirst() {
+        //Arrange
+        InventoryManager manager = new InventoryManager(List.of(gpuItem(), cpuItem(), ssdItem()));
+
+        //Act
+        List<InventoryItem> sorted = manager.getInventoryItemsSortedByDate();
+
+        //Assert
+        assertEquals(2, sorted.get(0).getProduct().getId());
+        assertEquals(3, sorted.get(1).getProduct().getId());
+        assertEquals(1, sorted.get(2).getProduct().getId());
+    }
+
+    @Test
+    void sortingDoesNotChangeStoredOrder() {
+        //Arrange
+        InventoryManager manager = new InventoryManager(List.of(gpuItem(), cpuItem(), ssdItem()));
+
+        //Act
+        manager.getInventoryItemsSortedByPrice();
+        List<InventoryItem> sorted = manager.getAllInventoryItems();
+
+        //Assert
+        assertEquals(1, sorted.get(0).getProduct().getId());
+        assertEquals(2, sorted.get(1).getProduct().getId());
+        assertEquals(3, sorted.get(2).getProduct().getId());
+    }
 
 }
