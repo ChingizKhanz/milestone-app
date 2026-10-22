@@ -100,15 +100,15 @@ class ShoppingCartTest {
     }
 
     @Test
-    void cartTotalAddsSubtotals(){
-        //Arrange
+    void cartTotalAddsSubtotals() {
+        // Arrange
         CartService cart = new ShoppingCart(inventory());
 
-        //Act
+        // Act
         cart.addProduct(gpu(), 2);
         cart.addProduct(cpu(), 1);
 
-        //Assert
+        // Assert
         assertEquals(1450.0, cart.getCartTotal(), 0.001);
     }
 
@@ -120,5 +120,84 @@ class ShoppingCartTest {
         // Assert
         assertTrue(cart.getAllCartItems().isEmpty());
         assertEquals(0.0, cart.getCartTotal(), 0.001);
+    }
+
+    @Test
+    void successfulCheckoutReducesInventory() {
+        // Arrange
+        InventoryManager inventory = inventory();
+        CartService cart = new ShoppingCart(inventory);
+        cart.addProduct(gpu(), 2);
+        cart.addProduct(cpu(), 1);
+
+        // Act
+        boolean done = cart.checkout();
+
+        // Assert
+        assertTrue(done);
+        assertEquals(3, inventory.getInventoryItemByProductId(1).getQuantityInStock());
+        assertEquals(2, inventory.getInventoryItemByProductId(2).getQuantityInStock());
+    }
+
+    @Test
+    void successfulCheckoutEmptiesCart() {
+        // Arrange
+        InventoryManager inventory = inventory();
+        CartService cart = new ShoppingCart(inventory);
+        cart.addProduct(gpu(), 2);
+
+        // Act
+        cart.checkout();
+
+        // Assert
+        assertTrue(cart.getAllCartItems().isEmpty());
+        assertEquals(0.0, cart.getCartTotal(), 0.001);
+        assertEquals(3, inventory.getInventoryItemByProductId(1).getQuantityInStock());
+    }
+
+    @Test
+    void notEnoughStockBlocksCheckout() {
+        // Arrange
+        InventoryManager inventory = inventory();
+        CartService cart = new ShoppingCart(inventory);
+        cart.addProduct(gpu(), 2);
+        inventory.updateQuantity(1, 1);
+
+        // Act
+        boolean done = cart.checkout();
+
+        // Assert
+        assertFalse(done);
+        assertEquals(1, cart.getAllCartItems().size());
+    }
+
+    @Test
+    void failedCheckoutDoesNotPartlyReduceInventory() {
+        // Arrange
+        InventoryManager inventory = inventory();
+        CartService cart = new ShoppingCart(inventory);
+        cart.addProduct(gpu(), 2);
+        cart.addProduct(cpu(), 3);
+        inventory.updateQuantity(2, 1);
+
+        // Act
+        boolean done = cart.checkout();
+
+        // Assert
+        assertFalse(done);
+        assertEquals(5, inventory.getInventoryItemByProductId(1).getQuantityInStock());
+        assertEquals(1, inventory.getInventoryItemByProductId(2).getQuantityInStock());
+    }
+
+    @Test
+    void emptyCartCheckoutReturnsFalse() {
+        // Arrange
+        CartService cart = new ShoppingCart(inventory());
+
+        // Act
+        boolean done = cart.checkout();
+
+        // Assert
+        assertFalse(done);
     }
 }
