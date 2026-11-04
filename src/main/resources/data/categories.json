@@ -1,0 +1,7 @@
+[
+  { "category": "gpu", "description": "Graphics cards" },
+  { "category": "cpu", "description": "Desktop processors" },
+  { "category": "ssd", "description": "Solid state drives" },
+  { "category": "ram", "description": "Desktop memory" },
+  { "category": "motherboard", "description": "Motherboards" }
+]
