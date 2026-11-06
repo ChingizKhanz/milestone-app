@@ -1,5 +1,9 @@
 package edu.gcu.cst239.askarov.chingiz.milestone_app.services;
 
+import java.util.List;
+
+import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
+
 /**
  * Represents the storefront application and provides access to its
  * major services.
@@ -14,9 +18,10 @@ public class StoreFront {
 
     /**
      * Creates the storefront and its required services.
+     * @param items the starting inventory loaded from JSON
      */
-    public StoreFront() {
-        inventoryManager = new InventoryManager();
+    public StoreFront(List<InventoryItem> items) {
+        inventoryManager = new InventoryManager(items);
         cartService = new ShoppingCart(inventoryManager);
     }
 
