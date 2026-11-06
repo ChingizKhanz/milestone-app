@@ -121,8 +121,7 @@ public class InventoryManager implements InventoryService {
 
     @Override
     public void clearInventory() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'clearInventory'");
+        inventory.clear();
     }
 
     /**

@@ -15,7 +15,7 @@ import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.ProductCategoryDto;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.ProductDto;
 
-/** Reads store data from JSON files. */
+/** Reads and writes store data from JSON files. */
 public class FileService {
 
     private static final int STARTING_STOCK = 10;
@@ -81,5 +81,19 @@ public class FileService {
             throw new IllegalArgumentException("Product " + dto.id() + " has unknown category: " + dto.category());
         }
         LocalDate.parse(dto.dateOfManufacture());
+    }
+
+    /**
+     * Maps every product back to a DTO and writes them to a JSON file.
+     * @param path the file to write
+     * @param items the current inventory
+     * @throws IOException when the file cannot be written
+     */
+    public void saveInventory(Path path, List<InventoryItem> items) throws IOException {
+        List<ProductDto> dtos = new ArrayList<>();
+        for (InventoryItem item : items) {
+            dtos.add(ProductMapper.toDto(item.getProduct()));
+        }
+        mapper.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), dtos);
     }
 }

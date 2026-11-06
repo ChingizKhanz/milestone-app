@@ -1,10 +1,13 @@
 package edu.gcu.cst239.askarov.chingiz.milestone_app.actions;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.InventoryItem;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.models.Product;
+import edu.gcu.cst239.askarov.chingiz.milestone_app.services.FileService;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.InventoryService;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.services.StoreFront;
 import edu.gcu.cst239.askarov.chingiz.milestone_app.util.InputUtilities;
@@ -15,7 +18,11 @@ import edu.gcu.cst239.askarov.chingiz.milestone_app.util.InputUtilities;
  */
 public class StoreManagerActions {
 
+    private static final Path CATEGORIES_FILE = Path.of("src", "main", "resources", "data", "categories.json");
+    private static final Path SAVE_FILE = Path.of("src", "main", "resources", "data", "saved-products.json");
+
     private final StoreFront store;
+    private final FileService fileService = new FileService();
 
     /**
      * Creates the store manager menu for a storefront.
@@ -138,11 +145,26 @@ public class StoreManagerActions {
                     break;
                 case 6:
                     System.out.println("You chose to save inventory to a file");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    try {
+                        List<InventoryItem> toSave = inventoryService.getAllInventoryItems();
+                        fileService.saveInventory(SAVE_FILE, toSave);
+                        System.out.println("Saved " + toSave.size() + " products to " + SAVE_FILE);
+                    } catch (IOException e) {
+                        System.out.println("Save failed: " + e.getMessage());
+                    }
                     break;
                 case 7:
                     System.out.println("You chose to load inventory from a file");
-                    System.out.println("This is milestone #1.  No actual functionality has been implemented yet.");
+                    try {
+                        List<InventoryItem> loaded = fileService.loadInventory(CATEGORIES_FILE, SAVE_FILE);
+                        inventoryService.clearInventory();
+                        for (InventoryItem item : loaded) {
+                            inventoryService.addInventoryItem(item);
+                        }
+                        System.out.println("Loaded " + loaded.size() + " products from " + SAVE_FILE);
+                    } catch (IOException | IllegalArgumentException e) {
+                        System.out.println("Load failed, inventory not changed: " + e.getMessage());
+                    }
                     break;
                 case 0:
                     System.out.println("You chose to exit.");
